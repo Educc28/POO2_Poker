@@ -1,4 +1,4 @@
-from DeckClasses import Baralho, Partida
+from baralho import Baralho, Partida
 
 while True:
 

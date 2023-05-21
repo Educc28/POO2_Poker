@@ -1,134 +1,159 @@
 from baralhoFrio import BaralhoFrio
 from player import Player
 from pokerScorer import PokerScorer
+from mesa import Mesa
+import sys
 
-#Para se iniciar o Jogo, precisa utilizar no seu emulador o interpreterVideoPoker()
+# Para se iniciar o Jogo, precisa utilizar no seu emulador o interpreterVideoPoker()
+
+
 def interpreterVideoPoker():
-  player = Player()
+    player = Player()
+    mesa = Mesa()
 
-  # Intial Amount
-  points = 100
+    end = False
 
-  # Cost per hand
-  handCost = 10
+    while not end:
+        # utilizado para assim que iniciar o jogo, voce recebe um deck, e ele recebe uma misturada.
+        # Hand Loop
+        baralho = BaralhoFrio()
+        baralho.shuffle()
 
-  end = False
-  while not end:
-    print( "You have {0} points".format(points) )
-    print()
+        # Deal Out
+        # para entregar ao jogador 5 cartas
+        for i in range(2):
+            player.addCarta(baralho.deal())
 
-    points-=10
+          # para carta nas mãos deste jogador para este jogador ele verá suas cartas
+          # Make them visible
+        for carta in player.cartas:
+            carta.showing = True
+        for carta in mesa.cartas:
+            carta.showing = True
+        print(player.cartas)
 
-    #utilizado para assim que iniciar o jogo, voce recebe um deck, e ele recebe uma misturada.
-    #Hand Loop
-    baralho = BaralhoFrio()
-    baralho.shuffle()
+        # validInput = False
+        # while not validInput:
 
-    # Deal Out
-    #para entregar ao jogador 5 cartas
-    for i in range(5):
-      player.addCard(baralho.deal())
+        while len(mesa.cartas) < 5:
+            print("Digite 1 para ir para a proxima etapa ou 0 para sair: ")
+            inputStr = input()
 
-    #para carta nas mãos deste jogador para este jogador ele verá suas cartas
-    # Make them visible
-    for card in player.cards:
-      card.showing = True
-    print(player.cards)
+            if inputStr == "1" and len(mesa.cartas) == 0:
+                for i in range(3):
+                    mesa.addCarta(baralho.deal())
+                for carta in mesa.cartas:
+                    carta.showing = True
+                print(f'Mesa: {mesa.cartas}')
 
-    validInput = False
-    while not validInput:
-      print("Quais Cartas você quer descartar? ( Ex. 1, 2, 3 )")
-      print("Aperte Enter para segurar e escreva exit para sair do jogo ")
-      inputStr = input()
+            elif inputStr == "1" and len(mesa.cartas) == 3:
+                for i in range(1):
+                    mesa.addCarta(baralho.deal())
+                for carta in mesa.cartas:
+                    carta.showing = True
+                print(f'Mesa: {mesa.cartas}')
 
-      if inputStr == "exit":
-        end=True
-        break
+            elif inputStr == "1" and len(mesa.cartas) == 4:
+                for i in range(1):
+                    mesa.addCarta(baralho.deal())
+                for carta in mesa.cartas:
+                    carta.showing = True
+                print(f'Mesa: {mesa.cartas}')
 
-        #um try para começo da verificação
+            elif inputStr == "0":
+                sys.exit()
 
-      try:
-        #Transformamos em inteiros, depois dividimos cada número pela virgula.
-        inputList = [int(inp.strip()) for inp in inputStr.split(",") if inp]
-        #validamos caso ele escreva corretamente
-        for inp in inputList:
-          if inp > 6:
-            continue 
-          if inp < 1:
-            continue 
-        #nesta lista, nós entregamos novas cartas e as mostramos para as pessoas
-        for inp in inputList:
-          player.cards[inp-1] = baralho.deal()
-          player.cards[inp-1].showing = True
+        for carta in mesa.cartas:
+            player.cartas.append(carta)
 
-        validInput = True
-      except:
-        #caso o usuário erre tudo
-        print("Você colocou um número errado")
+        print(player.cartas)
+        points = Score(player)
+        print(points)
+        player.cartas = []
+        end = True
 
-    print(player.cards)
-    #Score
-    #Seu cálculo é feito a partir dos pontos que você ganha com cada poder da mão.
-    score = PokerScorer(player.cards)
-    straight = score.straight()
+# Score
+# Seu cálculo é feito a partir dos pontos que você ganha com cada poder da mão.
+
+
+def Score(player):
+    score = PokerScorer(player.cartas)
     flush = score.flush()
-    highestCount = score.highestCount()
+    straight = score.straight()
+    highestCountFunction = score.highestCount()
+    highestCount = highestCountFunction[0]
+    highestCombination = highestCountFunction[1]
     pairs = score.pairs()
+    highcard = score.highCarta()
 
     # Royal flush
     if straight and flush and straight == 14:
-      print("Royal Flush!!!")
-      print("+2000")
-      points += 2000
+        print("Royal Flush!!!")
+        points = 10000
+        print(points)
+        return points
 
     # Straight flush
     elif straight and flush:
-      print("Straight Flush!")
-      print("+250")
-      points += 250
+        print("Straight Flush!")
+        points = 1500
+        print(points)
+        return points
 
     # 4 of a kind
     elif score.fourKind():
-      print("Four of a kind!")
-      print("+125")
-      points += 125
+        print("Four of a kind!")
+        points = 1000
+        print(points)
+        return points
 
     # Full House
     elif score.fullHouse():
-      print("Full House!")
-      print("+40")
-      points += 40
+        print("Full House!")
+        points = 500
+        print(points)
+        return points
 
     # Flush
     elif flush:
-      print("Flush!")
-      print("+25")
-      points += 25
+        print("Flush!")
+        points = 200
+        print(points)
+        return points
 
     # Straight
     elif straight:
-      print("Straight!")
-      print("+20")
-      points += 20
+        print("Straight!")
+        points = straight + 100
+        print(points)
+        return points
 
     # 3 of a kind
     elif highestCount == 3:
-      print("Three of a Kind!")
-      print("+15")
-      points += 15
+        print("Three of a Kind!")
+        points = highestCombination + 50
+        print(points)
 
     # 2 pair
     elif len(pairs) == 2:
-      print("Two Pairs!")
-      print("+10")
-      points += 10
+        print("Two Pairs!")
+        points = max(pairs) + 30
+        points += min(pairs)
+        print(points)
+        return points
 
     # Jacks or better
-    elif pairs and pairs[0] > 10:
-      print ("Jacks or Better!")
-      print("+5")
-      points += 5
+    elif pairs:
+        print("Pair")
+        points = max(pairs) + 15
+        print(points)
+        return points
+    else:
+        print("High Card")
+        points = 0
+        points = points + highcard.valor
+        print(points)
+        return points
 
-    player.cards=[]
 
 interpreterVideoPoker()

@@ -1,4 +1,4 @@
-class Player(object):
+class Mesa(object):
     def __init__(self):
         self.cartas = []
 # Uma lista para darmos ao player o seu deck.

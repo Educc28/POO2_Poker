@@ -1,6 +1,7 @@
 class Player(object):
     def __init__(self):
         self.cartas = []
+        self.fichas = 1000
 
 # Uma lista para darmos ao player o seu deck.
     def cartaCount(self):

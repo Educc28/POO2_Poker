@@ -9,6 +9,7 @@ import sys
 def interpreterVideoPoker():
     allPoints = []
     num_player = 0
+    pot = 0
     while num_player <= 0 or num_player > 23:
         num_player = int(input("Numero de jogadores: "))
         if num_player <= 0 or num_player > 23:
@@ -48,36 +49,45 @@ def interpreterVideoPoker():
         # while not validInput:
 
         while len(mesa.cartas) < 5:
-            print("Digite 1 para ir para a proxima etapa ou 0 para sair: ")
-            inputStr = input()
+            for everyPlayer in range(0, num_player):
+                fichasApostadas = int(input((f"Quantas fichas você quer apostar jogador{everyPlayer + 1}: ")))
+                pot = pot + fichasApostadas
+                player[everyPlayer].fichas = player[everyPlayer].fichas - fichasApostadas
 
-            if inputStr == "1" and len(mesa.cartas) == 0:
-                for i in range(3):
-                    mesa.addCarta(baralho.deal())
-                for carta in mesa.cartas:
-                    carta.showing = True
-                print(f'Mesa: {mesa.cartas}')
+            for i in range(3):
+                mesa.addCarta(baralho.deal())
+            for carta in mesa.cartas:
+                carta.showing = True
+            print(f'Mesa: {mesa.cartas}')
 
-            elif inputStr == "1" and len(mesa.cartas) == 3:
-                for i in range(1):
-                    mesa.addCarta(baralho.deal())
-                for carta in mesa.cartas:
-                    carta.showing = True
-                print(f'Mesa: {mesa.cartas}')
+            for everyPlayer in range(0, num_player):
+                fichasApostadas = int(input((f"Quantas fichas você quer apostar jogador{everyPlayer + 1}: ")))
+                pot = pot + fichasApostadas
+                player[everyPlayer].fichas = player[everyPlayer].fichas - fichasApostadas
 
-            elif inputStr == "1" and len(mesa.cartas) == 4:
-                for i in range(1):
-                    mesa.addCarta(baralho.deal())
-                for carta in mesa.cartas:
-                    carta.showing = True
-                print(f'Mesa: {mesa.cartas}')
-
-            elif inputStr == "0":
-                sys.exit()
+            for i in range(1):
+                mesa.addCarta(baralho.deal())
+            for carta in mesa.cartas:
+                carta.showing = True
+            print(f'Mesa: {mesa.cartas}')
 
 
-        for everyPlayer in range(0, num_player):
-            print(player[everyPlayer].cartas)
+            for everyPlayer in range(0, num_player):
+                fichasApostadas = int(input((f"Quantas fichas você quer apostar jogador{everyPlayer + 1}: ")))
+                pot = pot + fichasApostadas
+                player[everyPlayer].fichas = player[everyPlayer].fichas - fichasApostadas
+
+            for i in range(1):
+                mesa.addCarta(baralho.deal())
+            for carta in mesa.cartas:
+                carta.showing = True
+            print(f'Mesa: {mesa.cartas}')
+
+            for everyPlayer in range(0, num_player):
+                fichasApostadas = int(input((f"Quantas fichas você quer apostar jogador{everyPlayer + 1}: ")))
+                pot = pot + fichasApostadas
+                player[everyPlayer].fichas = player[everyPlayer].fichas - fichasApostadas
+
 
         for everyPlayer in range(0, num_player):
             points = Score(player[everyPlayer], mesa)
@@ -87,13 +97,12 @@ def interpreterVideoPoker():
         vencedores = [i for i, j in enumerate(allPoints) if j == maiorPontos]
 
         if len(vencedores) == 1:
-            print(f'Jogador {vencedores[0] + 1} venceu a rodada.')
+            print(f'Jogador {vencedores[0] + 1} venceu a rodada e recebe {pot} fichas')
+
         else:
             for i in vencedores:
                 print(f'Jogador {vencedores[i] + 1}')
-            print("Empataram")
-
-        print(vencedores)
+            print(f"Empataram e recebem {pot/len(vencedores)} fichas")
 
         end = True
 

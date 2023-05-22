@@ -1,13 +1,9 @@
+#Classe que representa todos os jogadores, suas fichas e suas cartas
 class Player(object):
     def __init__(self):
         self.cartas = []
         self.fichas = 1000
 
-# Uma lista para darmos ao player o seu deck.
-    def cartaCount(self):
-        return len(self.cartas)
-# Um contador das suas cartas
-
+#Método que adiciona cartas a mão do jogador
     def addCarta(self, carta):
         self.cartas.append(carta)
-# uma função de dar a carta ao jogador

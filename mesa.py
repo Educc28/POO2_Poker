@@ -1,12 +1,9 @@
+#Classe que representa as cartas que estão na mesa, cartas comuns para todos os jogadores
 class Mesa(object):
     def __init__(self):
         self.cartas = []
-# Uma lista para darmos ao player o seu deck.
 
-    def cartaCount(self):
-        return len(self.cartas)
-# Um contador das suas cartas
 
+#Método que adiciona uma carta a mesa
     def addCarta(self, carta):
         self.cartas.append(carta)
-# uma função de dar a carta ao jogador

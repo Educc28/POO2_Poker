@@ -1,189 +1,101 @@
 from baralhoFrio import BaralhoFrio
 from player import Player
-from pokerScorer import PokerScorer
 from mesa import Mesa
-import sys
+from pontuacao import Pontuacao
 
-# Para se iniciar o Jogo, precisa utilizar no seu emulador o interpreterVideoPoker()
-
-def interpreterVideoPoker():
+#Função que faz todo o jogo, chamando outras funções e utilizando de classes quando necessário
+def Jogo():
     allPoints = []
     num_player = 0
     pot = 0
+
+#Pede um input para saber quantos jogadores jogarão
     while num_player <= 0 or num_player > 23:
         num_player = int(input("Numero de jogadores: "))
         if num_player <= 0 or num_player > 23:
             print("Numero inválido, tente novamente.")
     
+#Cria a quantidade de jogadores segundo o input do usuário
     player = [Player() for i in range(0, num_player)]
-    print(player)
 
-    # player = Player() 
+#Cria a mesa
     mesa = Mesa()
 
-    end = False
-    while not end:
-        # utilizado para assim que iniciar o jogo, voce recebe um deck, e ele recebe uma misturada.
-        # Hand Loop
-        baralho = BaralhoFrio()
-        baralho.shuffle()
 
-        # Deal Out
-        # para entregar ao jogador 5 cartas
-        for everyPlayer in range(0, num_player):
-            player[everyPlayer].addCarta(baralho.deal())
-            player[everyPlayer].addCarta(baralho.deal())
+#Cria o baralho e o embaralha
+    baralho = BaralhoFrio()
+    baralho.shuffle()
 
 
-          # para carta nas mãos deste jogador para este jogador ele verá suas cartas
-          # Make them visible
-        # for carta in player.cartas:
-        #     carta.showing = True
-        # for carta in mesa.cartas:
-        #     carta.showing = True
-
-        for everyPlayer in range(0, num_player):
-            print(player[everyPlayer].cartas)
-
-        # validInput = False
-        # while not validInput:
-
-        while len(mesa.cartas) < 5:
-            for everyPlayer in range(0, num_player):
-                fichasApostadas = int(input((f"Quantas fichas você quer apostar jogador{everyPlayer + 1}: ")))
-                pot = pot + fichasApostadas
-                player[everyPlayer].fichas = player[everyPlayer].fichas - fichasApostadas
-
-            for i in range(3):
-                mesa.addCarta(baralho.deal())
-            for carta in mesa.cartas:
-                carta.showing = True
-            print(f'Mesa: {mesa.cartas}')
-
-            for everyPlayer in range(0, num_player):
-                fichasApostadas = int(input((f"Quantas fichas você quer apostar jogador{everyPlayer + 1}: ")))
-                pot = pot + fichasApostadas
-                player[everyPlayer].fichas = player[everyPlayer].fichas - fichasApostadas
-
-            for i in range(1):
-                mesa.addCarta(baralho.deal())
-            for carta in mesa.cartas:
-                carta.showing = True
-            print(f'Mesa: {mesa.cartas}')
+#Entrega duas cartas para cada jogador
+    for everyPlayer in range(0, num_player):
+        player[everyPlayer].addCarta(baralho.deal())
+        player[everyPlayer].addCarta(baralho.deal())
 
 
-            for everyPlayer in range(0, num_player):
-                fichasApostadas = int(input((f"Quantas fichas você quer apostar jogador{everyPlayer + 1}: ")))
-                pot = pot + fichasApostadas
-                player[everyPlayer].fichas = player[everyPlayer].fichas - fichasApostadas
-
-            for i in range(1):
-                mesa.addCarta(baralho.deal())
-            for carta in mesa.cartas:
-                carta.showing = True
-            print(f'Mesa: {mesa.cartas}')
-
-            for everyPlayer in range(0, num_player):
-                fichasApostadas = int(input((f"Quantas fichas você quer apostar jogador{everyPlayer + 1}: ")))
-                pot = pot + fichasApostadas
-                player[everyPlayer].fichas = player[everyPlayer].fichas - fichasApostadas
 
 
-        for everyPlayer in range(0, num_player):
-            points = Score(player[everyPlayer], mesa)
-            allPoints.append(points)
-            # print(allPoints)
-        maiorPontos = max(allPoints)
-        vencedores = [i for i, j in enumerate(allPoints) if j == maiorPontos]
+#Imprime a mão dos jogadores
+    for everyPlayer in range(0, num_player):
+        print(player[everyPlayer].cartas)
 
-        if len(vencedores) == 1:
-            print(f'Jogador {vencedores[0] + 1} venceu a rodada e recebe {pot} fichas')
+#Pergunta para cada jogador quantas fichas ele quer apostar e adiciona ao pot
+    for everyPlayer in range(0, num_player):
+        fichasApostadas = int(input((f"Quantas fichas você quer apostar jogador{everyPlayer + 1}: ")))
+        pot = pot + fichasApostadas
+        player[everyPlayer].fichas = player[everyPlayer].fichas - fichasApostadas
 
-        else:
-            for i in vencedores:
-                print(f'Jogador {vencedores[i] + 1}')
-            print(f"Empataram e recebem {pot/len(vencedores)} fichas")
+#Adiciona cartas a mesa e imprime todas as cartas da mesa
+    for i in range(3):
+        mesa.addCarta(baralho.deal())
+    print(f'Mesa: {mesa.cartas}')
 
-        end = True
+#Pergunta para cada jogador quantas fichas ele quer apostar e adiciona ao pot
+    for everyPlayer in range(0, num_player):
+        fichasApostadas = int(input((f"Quantas fichas você quer apostar jogador{everyPlayer + 1}: ")))
+        pot = pot + fichasApostadas
+        player[everyPlayer].fichas = player[everyPlayer].fichas - fichasApostadas
 
-# Score
-# Seu cálculo é feito a partir dos pontos que você ganha com cada poder da mão.
+#Adiciona cartas a mesa e imprime todas as cartas da mesa
+    for i in range(1):
+        mesa.addCarta(baralho.deal())
+    print(f'Mesa: {mesa.cartas}')
+
+#Pergunta para cada jogador quantas fichas ele quer apostar e adiciona ao pot
+    for everyPlayer in range(0, num_player):
+        fichasApostadas = int(input((f"Quantas fichas você quer apostar jogador{everyPlayer + 1}: ")))
+        pot = pot + fichasApostadas
+        player[everyPlayer].fichas = player[everyPlayer].fichas - fichasApostadas
+
+#Adiciona cartas a mesa e imprime todas as cartas da mesa
+    for i in range(1):
+        mesa.addCarta(baralho.deal())
+    print(f'Mesa: {mesa.cartas}')
+
+#Pergunta para cada jogador quantas fichas ele quer apostar e adiciona ao pot
+    for everyPlayer in range(0, num_player):
+        fichasApostadas = int(input((f"Quantas fichas você quer apostar jogador{everyPlayer + 1}: ")))
+        pot = pot + fichasApostadas
+        player[everyPlayer].fichas = player[everyPlayer].fichas - fichasApostadas
 
 
-def Score(player, mesa):
-    for carta in mesa.cartas:
-        player.cartas.append(carta)
+#Para cada jogador, vê a mão que ele possui e adiciona a pontuação relativa para cada mão em um array
+    for everyPlayer in range(0, num_player):
+        points = Pontuacao(player[everyPlayer], mesa)
+        allPoints.append(points)
 
-    score = PokerScorer(player.cartas)
-    four = score.fourKind()
-    flush = score.flush()
-    straight = score.straight()
-    highestCountFunction = score.highestCount()
-    highestCount = highestCountFunction[0]
-    highestCombination = highestCountFunction[1]
-    pairs = score.pairs()
-    highcard = score.highCarta()
+#Vê qual jogador venceu ou se há multiplos vencedores
+    maiorPontos = max(allPoints)
+    vencedores = [i for i, j in enumerate(allPoints) if j == maiorPontos]
 
+#Confere se um jogador venceu sozinho ou se houve um empate, também mostra quantas fichas eles ganharam
+    if len(vencedores) == 1:
+        print(f'Jogador {vencedores[0] + 1} venceu a rodada e recebe {pot} fichas')
 
-    # Royal flush
-    if straight and flush and straight == 14:
-        print("Royal Flush!!!")
-        points = 10000
-        return points
-
-    # Straight flush
-    elif straight and flush:
-        print("Straight Flush!")
-        points = 1500 + straight
-        return points
-
-    # 4 of a kind
-    elif four:
-        print("Four of a kind!")
-        points = 1000 + four
-        return points
-
-    # Full House
-    elif score.fullHouse():
-        print("Full House!")
-        points = 500
-        return points
-
-    # Flush
-    elif flush:
-        print("Flush!")
-        points = 200
-        return points
-
-    # Straight
-    elif straight:
-        print("Straight!")
-        points = straight + 100
-        return points
-
-    # 3 of a kind
-    elif highestCount == 3:
-        print("Three of a Kind!")
-        points = highestCombination + 50
-        return points
-    
-    # 2 pair
-    elif len(pairs) >= 2:
-        print("Two Pairs!")
-        points = max(pairs) + 30
-        points += min(pairs)
-        return points
-
-    # Jacks or better
-    elif pairs:
-        print("Pair")
-        points = max(pairs) + 15
-        return points
     else:
-        print("High Card")
-        points = 0
-        points = points + highcard.valor
-        return points
+        for i in vencedores:
+            print(f'Jogador {vencedores[i] + 1}')
+        print(f"Empataram e recebem {pot/len(vencedores)} fichas cada")
 
-
-interpreterVideoPoker()
+#Inicia o Jogo
+Jogo()

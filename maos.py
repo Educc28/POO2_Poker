@@ -1,12 +1,9 @@
-class PokerScorer(object):
+#Classe que representa as mãos do poker (combinações)
+class Maos(object):
     def __init__(self, cartas):
-        # Number of cartas
-        if not len(cartas) == 7:
-            return "Error: Wrong number of cards"
         self.cartas = cartas
-# Mãos de poker: https://www.cartaplayer.com/rules-of-poker/hand-rankings
-# Flush são 5 cartas do mesmo naipe
 
+#Confere se a mão do jogador faz um flush
     def flush(self):
         copasCount = 0
         espadasCount = 0
@@ -14,9 +11,7 @@ class PokerScorer(object):
         pausCount = 0
 
         naipes = [carta.naipe for carta in self.cartas]
-        # naipes = ['Paus', 'Paus', 'Paus',
-        #           'Paus', 'Paus', 'Espadas', 'Ouros']
-        # print(naipes)
+
         for naipe in naipes:
             if naipe == "Copas":
                 copasCount = copasCount + 1
@@ -36,20 +31,16 @@ class PokerScorer(object):
             return False
 
 
-# 5 Valores seguidos, utilizado .sort, e um set para validação
-
-
-    def straight(self):
+#Confere se a mão do jogador faz uma sequência, retorna falso ou o valor do número mais alto da sequência
+    def sequencia(self):
         valores = [carta.valor for carta in self.cartas]
         valores = list(set(valores))
-        # print(valores)
-        # valores = [2, 3, 10, 11, 12, 13, 14]
-        # print(valores)
 
+#Confere se a sequência é possível
         if len(valores) < 5:
             return False
-# Como o As pode ser tanto como o numero 1 inteiro tivemos que fazer esta condição.
-
+        
+#Confere se a sequência é de A a 5, retorna 5 se verdadeiro
         elif valores[0] == 2 and valores[1] == 3 and valores[2] == 4 and valores[3] == 5 and valores[4] == 14:
             return 5
         elif len(valores) >= 6 and valores[0] == 2 and valores[1] == 3 and valores[2] == 4 and valores[3] == 5 and valores[5] == 14:
@@ -57,6 +48,7 @@ class PokerScorer(object):
         elif len(valores) == 7 and valores[0] == 2 and valores[1] == 3 and valores[2] == 4 and valores[3] == 5 and valores[6] == 14:
             return 5
 
+#Confere as outras sequências, retorna o valor do número mais alto da sequência se verdadeiro, ou falso
         else:
             if len(valores) == 7 and valores[2] + 4 == valores[3] + 3 == valores[4] + 2 == valores[5] + 1 == valores[6]:
                 return valores[6]
@@ -67,47 +59,49 @@ class PokerScorer(object):
             else:
                 return False
 
-# Definição das cartas altas.
-# O valor é definiddo por uma comparação dos valores respectivos aquele dicionário.
 
-    def highCarta(self):
+#Retorna o valor da carta mais alta da mão do jogador
+    def cartaAlta(self):
         valores = [carta.valor for carta in self.cartas]
-        highcarta = None
+        cartaAlta = None
         for carta in self.cartas:
-            if highcarta is None:
-                highcarta = carta
-            elif highcarta.valor < carta.valor:
-                highcarta = carta
+            if cartaAlta is None:
+                cartaAlta = carta
+            elif cartaAlta.valor < carta.valor:
+                cartaAlta = carta
+        return cartaAlta
 
-        return highcarta
 
-    def highestCount(self):
+#Confere se a maior quantidade de vezes que uma carta se repete, retorna a quantidade de vezes e o valor da carta
+    def maiorRepeticao(self):
         count = 0
-        highestCombination = 0
+        maiorCombinacao = 0
         valores = [carta.valor for carta in self.cartas]
         for valor in valores:
             if valores.count(valor) > count:
                 count = valores.count(valor)
-                highestCombination = valor
-        return [count, highestCombination]
-# Definição dos pares, utilizado uma lista para comparar o mesmo valor da carta.
+                maiorCombinacao = valor
+        return [count, maiorCombinacao]
+    
 
-    def pairs(self):
-        pairs = []
+#Confere os pares, retorna o valor dos pares
+    def pares(self):
+        pares = []
         valores = [carta.valor for carta in self.cartas]
         for valor in valores:
-            if valores.count(valor) == 2 and valor not in pairs:
-                pairs.append(valor)
-        return pairs
-# Definição para definir se há uma quadrupla, ou seja, comparando o valor se há repetidamente 4 vezes.
+            if valores.count(valor) == 2 and valor not in pares:
+                pares.append(valor)
+        return pares
+    
 
-    def fourKind(self):
+#Confere se a mão do jogador faz um four, retorna o valor da carta ou false
+    def four(self):
         valores = [carta.valor for carta in self.cartas]
         for valor in valores:
             if valores.count(valor) == 4:
                 return valor
 
-# Uma full house avalia se há 3 cartas iguais e 2 cartas iguais
+#Confere se o jogador fez um full house, retorna verdadeiro ou falso
     def fullHouse(self):
         two = False
         three = False

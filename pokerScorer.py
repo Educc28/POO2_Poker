@@ -16,7 +16,7 @@ class PokerScorer(object):
         naipes = [carta.naipe for carta in self.cartas]
         # naipes = ['Paus', 'Paus', 'Paus',
         #           'Paus', 'Paus', 'Espadas', 'Ouros']
-        print(naipes)
+        # print(naipes)
         for naipe in naipes:
             if naipe == "Copas":
                 copasCount = copasCount + 1
@@ -105,7 +105,7 @@ class PokerScorer(object):
         valores = [carta.valor for carta in self.cartas]
         for valor in valores:
             if valores.count(valor) == 4:
-                return True
+                return valor
 
 # Uma full house avalia se há 3 cartas iguais e 2 cartas iguais
     def fullHouse(self):
@@ -113,12 +113,10 @@ class PokerScorer(object):
         three = False
 
         valores = [carta.valor for carta in self.cartas]
-        if valores.count(valores) == 2:
-            two = True
-        elif valores.count(valores) == 3:
-            three = True
 
-        if two and three:
+        same_cards = sorted([valores.count(a) for a in set(valores)])
+
+        if 2 in same_cards and 3 in same_cards:
             return True
         else:
             return False

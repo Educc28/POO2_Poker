@@ -1,8 +1,8 @@
 class Player(object):
     def __init__(self):
         self.cartas = []
-# Uma lista para darmos ao player o seu deck.
 
+# Uma lista para darmos ao player o seu deck.
     def cartaCount(self):
         return len(self.cartas)
 # Um contador das suas cartas

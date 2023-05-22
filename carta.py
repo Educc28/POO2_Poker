@@ -6,7 +6,7 @@ class Carta(object):
         self.valor = valor
         self.naipe = naipe
         self.simbolo = simbolo
-        self.showing = False
+        self.showing = True
 
 # def é utilizado para representar o objeto. Serve para mostrar customizar o que retorna - para saber o status de uma ação.
 
